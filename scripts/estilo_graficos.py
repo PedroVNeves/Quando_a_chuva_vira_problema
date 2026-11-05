@@ -23,7 +23,7 @@ def configurar_estilo():
 
 # Título, subtítulo, nota de leitura, dimensão e manutenção dos títulos dos painéis.
 FIGURAS = {
-    "17_coerencia_anual": ("As diferenças entre bairros persistem entre anos?", "Acúmulo de água · mesmos bairros · frequências padronizadas para chuva entre 10 e 50 mm", "Um ponto por bairro. Traços: IC exploratórios por semanas. A diagonal indica frequências iguais, não causalidade.", (12, 10), False),
+    "17_coerencia_anual": ("As diferenças entre bairros persistem entre anos?", "Acúmulo de água · mesmos bairros · frequências padronizadas para chuva entre 10 e 50 mm", "Um ponto por bairro. Traços claros: IC exploratórios por semanas, cortados na borda quando passam do limite. Acima da diagonal, mais registros em 2021.", (12, 10), False),
     "18_associacoes_padronizadas": ("Perfil social sob uma mistura fixa de chuva", "Correlações descritivas · mesmo peso para três faixas entre 10 e 50 mm · coorte comum por cenário", "Os critérios mudam a seleção de bairros. Pontos não são testes de significância nem medidas de efeito causal.", (17, 9), True),
     "15_ciclo_horario": ("Em quais horários a chuva se concentra?", "Rede fixa de três estações · mesmos dias completos · média dos anos elegíveis", "Linha: média horária. Faixa: percentis 25–75 das médias anuais; não é intervalo de confiança.", (16, 8), True),
     "16_extremos_historicos": ("Dias de chuva forte ao longo dos anos", "Rede fixa · frequência entre os dias comuns válidos · três definições exploratórias", "Lacunas: anos sem cobertura suficiente. Limites de 50, 80 e 100 mm/dia não são níveis oficiais de alerta.", (16, 9), True),
