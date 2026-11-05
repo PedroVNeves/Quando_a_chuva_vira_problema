@@ -244,6 +244,8 @@ os tempos registrados e a associação com o perfil social.
 e as frequências de extremos com cobertura comparável.
 `scripts/estilo_graficos.py` concentra a apresentação das figuras com Matplotlib
 e Seaborn.
+`scripts/graficos_interativos.py` gera as versões interativas com Plotly a partir
+das mesmas tabelas dos gráficos estáticos.
 
 `dados/processados/`, `resultados/` e `tmp/` são ignorados pelo Git e recriados
 quando necessários. As saídas principais também estão incorporadas no notebook
@@ -264,9 +266,14 @@ professor e a correspondência entre notebook, apresentação e versão publicad
 
 ### Exploração interativa
 
-Na seção 5 do notebook, um seletor de bairro apresenta as frequências e os
-denominadores nas três faixas de chuva, usando a mesma amostra do gráfico estático.
-O componente incorpora os dados e não depende de serviços externos. Requer um
-visualizador que permita HTML com JavaScript; execute a célula em um notebook
-confiável no Jupyter. Visualizadores que bloqueiam scripts e exportações estáticas
-continuam contando com o gráfico completo imediatamente anterior.
+Dois gráficos têm versão interativa (Plotly), logo abaixo da versão estática:
+
+- **Seção 4:** frequência de registros por faixa de chuva, com intervalos e
+  denominadores no tooltip e opção de escala logarítmica.
+- **Seção 5.1:** mapa de calor por bairro, com menu para reordenar os bairros e
+  tooltip com os dias com registro e o total de dias elegíveis.
+
+Os gráficos interativos exigem um visualizador que execute JavaScript (Jupyter
+ou VS Code, com o notebook confiável) e acesso à internet para carregar o Plotly.
+A pré-visualização do GitHub não os exibe; nela valem os gráficos estáticos. Cópias
+em HTML ficam em `resultados/` depois da execução.
