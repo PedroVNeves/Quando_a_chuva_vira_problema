@@ -14,6 +14,13 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import PythonLexer
 
 nb = json.load(open(sys.argv[1], encoding="utf-8"))
+if any(c.get("id") == "painel-diario" for c in nb["cells"]):
+    raise SystemExit(
+        "Este gerador pertence ao marco 2 anterior à revisão de 29/10/2026. "
+        "Seus textos e índices de células não correspondem ao notebook atual. "
+        "As figuras atuais são exportadas pelo notebook para resultados/. "
+        "Atualize o roteiro dos slides antes de gerar uma nova apresentação."
+    )
 SAIDA = Path(sys.argv[2])
 (SAIDA / "img").mkdir(parents=True, exist_ok=True)
 
