@@ -111,7 +111,7 @@ requirements.txt   Dependências da análise
 scripts/           Cálculos, figuras, execução do notebook e coleta de dados
 dados/brutos/      Entradas usadas na análise
 docs/              Enunciado da disciplina e proposta original
-apresentacao/      Apresentação do marco 2
+apresentacao/      Apresentação final (final.pdf) e a do marco 2
 ```
 
 | Script | Função |
