@@ -111,6 +111,13 @@ def diagnosticar_suporte_chuva(painel):
 
 
 def comparar_territorio_social(painel, social, n_boot=400):
+    """Padronização por bairro seguida das correlações com o perfil social."""
+    taxas, auditoria = padronizar_territorio(painel, n_boot)
+    taxas, correlacoes = correlacionar_social(taxas.drop(columns='nome', errors='ignore'), social)
+    return taxas, correlacoes, auditoria
+
+
+def padronizar_territorio(painel, n_boot=400):
     """Coorte comum entre anos por cenário; padronização direta descritiva."""
     p = painel.copy()
     if p.duplicated(['id_bairro','dia']).any():
@@ -160,7 +167,16 @@ def comparar_territorio_social(painel, social, n_boot=400):
             r['datas_distintas'],r['estacoes_distintas'] = t.dia.nunique(),t.id_estacao.nunique()
             saidas.append(r.reset_index())
     taxas = pd.concat(saidas,ignore_index=True)
-    taxas = taxas.merge(social[['id_bairro','nome',*INDICADORES_SOCIAIS]],on='id_bairro',how='left',validate='many_to_one')
+    if 'nome' in painel:
+        nomes = painel.drop_duplicates('id_bairro').set_index('id_bairro').nome
+        taxas.insert(1, 'nome', taxas.id_bairro.map(nomes))
+    return taxas, pd.DataFrame(auditorias)
+
+
+def correlacionar_social(taxas, social):
+    """Correlação de postos entre a frequência padronizada e cada indicador social."""
+    colunas = ['id_bairro',*INDICADORES_SOCIAIS] + (['nome'] if 'nome' not in taxas else [])
+    taxas = taxas.merge(social[colunas],on='id_bairro',how='left',validate='many_to_one')
     correlacoes = []
     for (cenario,periodo),t in taxas.groupby(['cenario','periodo']):
         for indicador,rotulo in INDICADORES_SOCIAIS.items():
@@ -168,7 +184,7 @@ def comparar_territorio_social(painel, social, n_boot=400):
             rho = v.rank().corr().iloc[0,1] if len(v)>=10 else np.nan
             correlacoes.append({'cenario':cenario,'periodo':periodo,'indicador':indicador,
                 'rotulo':rotulo,'bairros':len(v),'rho_descritivo':rho})
-    return taxas, pd.DataFrame(correlacoes), pd.DataFrame(auditorias)
+    return taxas, pd.DataFrame(correlacoes)
 
 
 def analisar_duracoes(foco, painel, cor, orgaos):
