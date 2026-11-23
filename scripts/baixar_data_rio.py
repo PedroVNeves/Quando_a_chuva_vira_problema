@@ -13,6 +13,8 @@ DESTINO = Path(__file__).resolve().parent.parent / "dados" / "brutos" / "data_ri
 
 CENSO = "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Censo/Limites_administrativos_Censo_2022/MapServer"
 IPS = "https://services1.arcgis.com/OlP4dGNtIcnD3RYf/arcgis/rest/services/IPSBairros/FeatureServer"
+# Limites oficiais de favelas do IPP (SABREN); a camada 12 é o mapeamento de 2019.
+FAVELAS = "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/SABREN/Limites_de_Favelas/MapServer"
 ITEM = "https://www.arcgis.com/sharing/rest/content/items/{}/data"
 
 CAMADAS = {
@@ -20,6 +22,7 @@ CAMADAS = {
     "censo2022_ra.parquet": f"{CENSO}/1",
     "censo2022_bairros.parquet": f"{CENSO}/2",
     "ips2022_bairros.parquet": f"{IPS}/0",
+    "limites_favelas_2019.parquet": f"{FAVELAS}/12",
 }
 ARQUIVOS = {
     "IPSBairros-DataRio.xlsx": ITEM.format("97a1d3ba9c4f4f0c967cbb5cc8738ca7"),

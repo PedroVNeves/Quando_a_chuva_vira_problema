@@ -38,9 +38,13 @@ ficam no apêndice.
   diferem, e essas diferenças se repetem em parte de 2020 para 2021 (ρ = 0,68 em 100
   bairros).
 - **O perfil social não explica as diferenças de forma uniforme.** Bairros com IPS
-  maior tendem a ter mais registros, ao contrário da hipótese inicial, o que pode
-  refletir mais monitoramento. Densidade e o indicador de favelas ficam perto de zero,
-  e domicílios inadequados só mostram associação em 2020.
+  maior tendem a ter mais registros, ao contrário da hipótese inicial. Densidade e o
+  indicador de favelas ficam perto de zero, e domicílios inadequados só mostram
+  associação em 2020.
+- **Os registros de alagamento quase não chegam às favelas.** Só 2,1% dos registros de
+  acúmulo de água caem dentro de favelas, que ocupam 4,1% da área da cidade, enquanto
+  28% dos deslizamentos estão nelas. A base registra melhor os alagamentos nas vias
+  monitoradas, o que ajuda a explicar o IPS positivo.
 - **A chuva se concentra no início da noite** nas três estações com série histórica
   comparável. A série não permite afirmar que os extremos aumentaram.
 
@@ -57,7 +61,7 @@ mostram associações, não causas.
 | 4 | Chuva e frequência de registros; afirmação da prefeitura | 2 e 3 |
 | 5 | Pancada ou acumulado: janelas anteriores de chuva | 4 |
 | 6 | Diferenças entre bairros, mapa e persistência entre anos | 2 e 5 |
-| 7 | Perfil social e habitação | 6 |
+| 7 | Perfil social, habitação e registros dentro das favelas | 6 |
 | 8 | Duração dos registros e primeira chegada dos órgãos | 7 |
 | 9 | Conclusões, limites e balanço da proposta | — |
 
@@ -72,6 +76,7 @@ A proposta previa 2015–2025. A seção 1 explica por que a análise diária fi
 | Ocorrências urbanas | COR, via datalake municipal | Tipo, horário, local, duração e chegada dos órgãos |
 | Limites de bairros | IPP, via datalake municipal | Associação espacial |
 | Censo 2022 e IPS Bairros 2022 | Data.Rio | Densidade, IPS e indicadores de habitação |
+| Limites de favelas 2019 | IPP (SABREN), servidor de mapas da prefeitura | Registros dentro e fora das favelas |
 
 Os arquivos brutos ficam em `dados/brutos/` e foram coletados com
 `scripts/baixar_datario.py` e `scripts/baixar_data_rio.py`.

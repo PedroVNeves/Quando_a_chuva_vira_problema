@@ -177,7 +177,8 @@ slides.append(slide_figura(
     "18_associacoes_padronizadas", "Correlação entre indicadores sociais e a frequência padronizada",
     stat("ρ = 0,28", "IPS: bairros com IPS maior têm mais registros, ao contrário da hipótese inicial")
     + '<p class="muted">Ponto cheio: 2020–2021; marcadores vazios: cada ano. Densidade, favelas e domicílios inadequados ficam na faixa de relação fraca.</p>'
-    + '<p class="muted">Registros dependem de alguém notificar: o resultado do IPS pode refletir mais monitoramento, não menos vulnerabilidade.</p>'))
+    + stat("2,1%", "dos registros de alagamento estão dentro de favelas, que ocupam 4,1% da cidade; nos deslizamentos, são 28%")
+    + '<p class="muted">A base registra melhor os alagamentos nas vias monitoradas: o IPS positivo reflete onde se registra, não menos vulnerabilidade.</p>'))
 
 slides.append(slide_figura(
     "Um acúmulo de água dura cerca de duas horas, com qualquer chuva",
