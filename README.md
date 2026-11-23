@@ -24,16 +24,18 @@ ficam no apêndice.
 ## Principais resultados
 
 - **A frequência de registros cresce com a chuva.** A frequência de bairro-dias com
-  acúmulo de água passa de 0,05% sem chuva para 12,8% entre 30 e 50 mm. A conta usa
+  acúmulo de água passa de 0,04% sem chuva para 13,2% entre 30 e 50 mm. A conta usa
   121.423 bairro-dias de 167 bairros.
 - **A afirmação da prefeitura depende da unidade.** Acima de 30 mm, há registro em 16%
-  dos bairro-dias, em 44% das estação-dias e em 94% das cidade-dias. O patamar de 50% é
+  dos bairro-dias, em 44% das estação-dias e em 93% das cidade-dias. O patamar de 50% é
   plausível para a área de uma estação, mas não para um bairro isolado.
-- **A chuva anterior também importa.** Mais chuva nas 1 h, 4 h, 24 h ou 96 h
-  anteriores se associa a mais registros, sem uma janela melhor que as outras.
-- **Os registros se concentram em poucos bairros.** A Barra da Tijuca soma 202 dos
-  1.724 registros, e dez bairros reúnem 41% do total. Sob a mesma chuva, os bairros
-  diferem, e essas diferenças se repetem em parte de 2020 para 2021 (ρ = 0,65 em 100
+- **A chuva da última hora pesa mais.** Mais chuva nas horas e dias anteriores se
+  associa a mais registros, mas a chuva da última hora tem a associação mais forte:
+  7% dos blocos com chuva forte na última hora têm registro, contra 2% com o critério
+  de 24 horas.
+- **Os registros se concentram em poucos bairros.** A Barra da Tijuca soma 197 dos
+  1.719 registros, e dez bairros reúnem 41% do total. Sob a mesma chuva, os bairros
+  diferem, e essas diferenças se repetem em parte de 2020 para 2021 (ρ = 0,68 em 100
   bairros).
 - **O perfil social não explica as diferenças de forma uniforme.** Bairros com IPS
   maior tendem a ter mais registros, ao contrário da hipótese inicial, o que pode
@@ -120,7 +122,7 @@ apresentacao/      Apresentação final (final.pdf) e a do marco 2
 | `analises_complementares.py` | Janelas anteriores, tempos registrados, perfil social e padronização |
 | `historico_chuva.py` | Rede histórica fixa, ciclo horário e extremos |
 | `estilo_graficos.py` | Identidade visual e títulos das figuras |
-| `graficos_interativos.py` | Versões interativas (Plotly) de dois gráficos |
+| `graficos_interativos.py` | Versões interativas (Plotly) de três gráficos |
 | `executar_notebook.py` | Execução completa do notebook |
 
 A execução gera `dados/processados/` e `resultados/` (figuras PNG/SVG, tabelas CSV e
@@ -128,8 +130,10 @@ A execução gera `dados/processados/` e `resultados/` (figuras PNG/SVG, tabelas
 
 ## Gráficos interativos
 
-Dois gráficos têm versão interativa logo abaixo da versão estática:
+Três gráficos têm versão interativa logo abaixo da versão estática:
 
+- **Seção 3:** registros do temporal de abril de 2019 sobre a chuva da rede, com menu
+  para trocar a janela (última hora, 4 h ou 24 h) e tipo, bairro e estação no tooltip.
 - **Seção 4:** frequência de registros por faixa de chuva, com detalhes no tooltip e
   opção de escala logarítmica.
 - **Seção 6.1:** mapa de calor por bairro, com menu para reordenar os bairros.

@@ -14,9 +14,24 @@ FAIXAS = ["0", ">0–10", ">10–20", ">20–30", ">30–50", ">50–100", ">100
 LIMITES = [-1e-9, 0, 10, 20, 30, 50, 100, np.inf]
 
 
+def corrigir_relogio_cor(instantes):
+    """Lê o horário do COR como hora local do Rio e devolve o instante em UTC.
+
+    A base marca os horários como UTC, mas eles já estão no horário local: os
+    acidentes de trânsito, por exemplo, têm picos às 7h–9h e 16h–18h no horário
+    gravado, o padrão do rush local. Horários ambíguos do fim do horário de verão
+    ficam no horário padrão; horários inexistentes avançam para a hora válida.
+    """
+    relogio = instantes.dt.tz_localize(None)
+    ambiguo = np.zeros(len(relogio), dtype=bool)
+    return relogio.dt.tz_localize(FUSO, ambiguous=ambiguo, nonexistent="shift_forward").dt.tz_convert("UTC")
+
+
 def carregar_cor(bq):
     bruto = pd.read_parquet(Path(bq) / "adm_cor_comando/ocorrencias.parquet")
     cor = bruto.drop_duplicates().copy()
+    for coluna in ["data_inicio", "data_fim"]:
+        cor[coluna] = corrigir_relogio_cor(cor[coluna])
     # IDs reaparecem em anos distintos. Não eliminar eventos apenas por id_evento.
     if cor[["id_evento", "data_inicio"]].isna().any().any():
         raise ValueError("COR com chave incompleta: revisar antes de analisar.")

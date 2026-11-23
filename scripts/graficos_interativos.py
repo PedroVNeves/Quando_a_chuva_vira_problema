@@ -147,6 +147,58 @@ def interativo_bairros(comparacao, faixas=("0–10", ">10–30", ">30")):
     return fig
 
 
+JANELAS_CASO = {"acumulado_chuva_1_h": "na última hora", "acumulado_chuva_4_h": "nas 4 horas anteriores",
+                "acumulado_chuva_24_h": "nas 24 horas anteriores"}
+
+
+def interativo_caso(pontos, faixa_rede):
+    """Temporal de 2019: cada registro sobre a chuva da rede, com menu para trocar a janela.
+
+    pontos: um registro por linha, com inicio_local, grupo, pop_titulo, nome, estacao,
+    distancia_m e os acumulados de JANELAS_CASO. faixa_rede: índice de horário local e
+    colunas (janela, "median"/"max") com a mediana e o máximo das estações.
+    """
+    inicial = "acumulado_chuva_24_h"
+    x_rede = faixa_rede.index.tz_localize(None)
+    pontos = pontos.sort_values("inicio_local").copy()
+    pontos["x"] = pontos.inicio_local.dt.tz_localize(None)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x_rede, y=faixa_rede[(inicial, "median")], mode="lines", name="Mediana das estações",
+                             line=dict(color=MUTED, width=1.4), hovertemplate="%{x|%d/%m %Hh%M} · mediana da rede: %{y:.0f} mm<extra></extra>"))
+    fig.add_trace(go.Scatter(x=x_rede, y=faixa_rede[(inicial, "max")], mode="lines", name="Até a estação mais chuvosa",
+                             line=dict(width=0), fill="tonexty", fillcolor="rgba(185,219,216,.45)",
+                             hovertemplate="%{x|%d/%m %Hh%M} · máximo da rede: %{y:.0f} mm<extra></extra>"))
+    grupos = [("Acúmulo de água", TEAL, "circle"), ("Deslizamentos", COPPER, "triangle-up")]
+    for grupo, cor, simbolo in grupos:
+        p = pontos.loc[pontos.grupo.eq(grupo)]
+        dados = np.column_stack([
+            p.inicio_local.dt.strftime("%d/%m às %Hh%M"), p.pop_titulo.fillna(grupo), p.nome.fillna("—"),
+            p.estacao.fillna("—"), (p.distancia_m/1000).map(lambda v: f"{v:.1f}".replace(".", ",")),
+            *[p[c].map(lambda v: f"{v:.1f}".replace(".", ",")) for c in JANELAS_CASO]])
+        fig.add_trace(go.Scatter(
+            x=p.x, y=p[inicial], mode="markers", name=f"{grupo} ({len(p)})", customdata=dados,
+            marker=dict(color=cor, symbol=simbolo, size=9, opacity=.85, line=dict(color="white", width=.8)),
+            hovertemplate=("<b>%{customdata[1]}</b><br>%{customdata[0]} · %{customdata[2]}<br>"
+                           "Estação %{customdata[3]} (%{customdata[4]} km)<br>"
+                           "Chuva antes: %{customdata[5]} mm em 1 h · %{customdata[6]} mm em 4 h · %{customdata[7]} mm em 24 h<extra></extra>")))
+    botoes = []
+    for coluna, rotulo in JANELAS_CASO.items():
+        ys = [faixa_rede[(coluna, "median")], faixa_rede[(coluna, "max")]] + [pontos.loc[pontos.grupo.eq(g), coluna] for g, _, _ in grupos]
+        botoes.append(dict(label=f"Chuva {rotulo}", method="update",
+                           args=[{"y": ys}, {"yaxis.title.text": f"Chuva {rotulo} (mm)"}]))
+    fig.update_layout(updatemenus=[dict(buttons=botoes, active=list(JANELAS_CASO).index(inicial), x=0, y=1.02,
+                                        xanchor="left", yanchor="bottom", bgcolor="white", bordercolor=GRID)],
+                      legend=dict(orientation="h", x=1, xanchor="right", y=1.02, yanchor="bottom"))
+    fig.update_xaxes(tickformat="%d/%m<br>%Hh", gridcolor=GRID, showline=True, linecolor=GRID)
+    fig.update_yaxes(title_text="Chuva nas 24 horas anteriores (mm)", rangemode="tozero", gridcolor=GRID, zeroline=False)
+    nota = ("Cada ponto é um registro, com a chuva da estação mais próxima até o início dele. A faixa vai da mediana ao "
+            "máximo das estações da rede.<br>Use o menu para trocar a janela de chuva e passe o mouse para ver tipo, bairro e estação.")
+    fig = _layout(fig, "Os registros acompanham a chuva",
+                  "Temporal de 8 e 9 de abril de 2019 · registros de acúmulo de água e deslizamentos", nota, altura=620)
+    fig.update_layout(margin=dict(t=175))
+    return fig
+
+
 def mostrar_interativo(fig, nome, descricao, pasta=Path("resultados")):
     """Salva o HTML do gráfico e devolve um iframe isolado para exibir no notebook.
 

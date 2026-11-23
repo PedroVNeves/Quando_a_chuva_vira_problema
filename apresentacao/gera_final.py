@@ -111,7 +111,7 @@ slides.append("""
     <div class="arrow">→</div>
     <div class="box"><span class="num">121.423</span><span class="lbl">elegíveis: a estação do bairro tem o total do dia completo</span></div>
     <div class="arrow">→</div>
-    <div class="box accent"><span class="num">1.162</span><span class="lbl">com pelo menos um registro de acúmulo de água (1.724 registros)</span></div>
+    <div class="box accent"><span class="num">1.149</span><span class="lbl">com pelo menos um registro de acúmulo de água (1.719 registros)</span></div>
   </div>
   <div class="formula">frequência = bairro-dias <b>com registro</b> ÷ bairro-dias <b>elegíveis</b>, por faixa de chuva</div>
   <p class="muted center">Olhar só os dias com ocorrência mostra quanto choveu quando houve problema, mas não a chance de haver problema quando chove.<br>
@@ -129,10 +129,10 @@ slides.append(slide_figura(
 slides.append(slide_figura(
     "Mais chuva, mais registros, mas longe de 50% por bairro",
     "07_frequencia_chuva", "Frequência de bairro-dias com registro por faixa de chuva diária",
-    stat("0,05%", "dos bairro-dias sem chuva têm registro de acúmulo de água")
-    + stat("12,8%", "entre 30 e 50 mm")
-    + stat("30,9%", "acima de 100 mm, com só 9 datas")
-    + '<p class="muted">Ponto: frequência; traço: intervalo de 95%. Mudar as escolhas de método altera as frequências em no máximo 2,5 pontos percentuais.</p>'))
+    stat("0,04%", "dos bairro-dias sem chuva têm registro de acúmulo de água")
+    + stat("13,2%", "entre 30 e 50 mm")
+    + stat("32,0%", "acima de 100 mm, com só 9 datas")
+    + '<p class="muted">Ponto: frequência; traço: intervalo de 95%. Mudar as escolhas de método altera as frequências em no máximo 3,4 pontos percentuais.</p>'))
 
 slides.append("""
 <section class="slide">
@@ -142,7 +142,7 @@ slides.append("""
     <div class="side">
       <div class="unit"><span class="num">16%%</span><span class="lbl"><b>bairro-dia</b>: registro no próprio bairro</span></div>
       <div class="unit hl"><span class="num">44%%</span><span class="lbl"><b>estação-dia</b>: registro em algum bairro da estação</span></div>
-      <div class="unit"><span class="num">94%%</span><span class="lbl"><b>cidade-dia</b>: registro em qualquer bairro</span></div>
+      <div class="unit"><span class="num">93%%</span><span class="lbl"><b>cidade-dia</b>: registro em qualquer bairro</span></div>
       <p class="muted">Dias acima de 30 mm, faixa cinza do gráfico. Na unidade da prefeitura, a estação, o patamar de 50%% é plausível. Para um bairro isolado, não: um alerta por bairro baseado nos 30 mm superestimaria o risco.</p>
     </div>
   </div>
@@ -150,16 +150,16 @@ slides.append("""
 </section>""" % figura("20_unidade_prefeitura"))
 
 slides.append(slide_figura(
-    "Pancada ou acumulado: todas as janelas contam",
+    "Pancada ou acumulado: a chuva da última hora pesa mais",
     "13_janelas_chuva", "Frequência de registros por classe de chuva anterior em quatro janelas",
     '<p class="lead-s">Medimos a chuva das <b>1 h, 4 h, 24 h e 96 h anteriores</b> a blocos de seis horas, para que a chuva venha antes do registro.</p>'
-    + stat("485.753", "bairro-blocos na mesma amostra para as quatro janelas")
-    + '<p class="muted">Em todas, mais chuva anterior vem com mais registros. As janelas usam cortes relativos (P50, P90), então a comparação não aponta uma vencedora.</p>'))
+    + stat("7,0%", "dos blocos com chuva acima do P90 na última hora têm registro, contra 2,3% no acumulado de 24 h")
+    + '<p class="muted">Em todas as janelas, mais chuva anterior vem com mais registros. A classe de 1 h reúne casos mais extremos: é associação, não desempenho de um alerta.</p>'))
 
 slides.append(slide_figura(
     "Poucos bairros concentram os registros",
     "19_mapa_registros", "Mapas por bairro: total de registros e frequência sob chuva forte",
-    stat("41%", "dos 1.724 registros estão em dez bairros; a Barra da Tijuca sozinha tem 202")
+    stat("41%", "dos 1.719 registros estão em dez bairros; a Barra da Tijuca sozinha tem 197")
     + '<p class="muted">Sob chuva forte (direita), as frequências mais altas ficam na Zona Sul e no entorno do Centro: Lagoa, Catete, Manguinhos.</p>'
     + '<p class="muted">Muitos registros não é o mesmo que muitos registros por chuva: a Barra teve só 16 dias acima de 30 mm.</p>',
     "wide"))
@@ -167,23 +167,23 @@ slides.append(slide_figura(
 slides.append(slide_figura(
     "As diferenças entre bairros se repetem de um ano para o outro",
     "17_coerencia_anual", "Frequência padronizada de cada bairro em 2020 contra 2021",
-    stat("ρ = 0,65", "correlação de postos entre 2020 e 2021, nos mesmos 100 bairros")
-    + stat("67 de 100", "bairros mudam até 5 pontos percentuais")
+    stat("ρ = 0,68", "correlação de postos entre 2020 e 2021, nos mesmos 100 bairros")
+    + stat("66 de 100", "bairros mudam até 5 pontos percentuais")
     + '<p class="muted">Um ponto por bairro; faixa cinza: diferença de até 5 pontos. A frequência é padronizada: cada bairro é comparado como se tivesse recebido a mesma mistura de chuva (10–50 mm). As diferenças não parecem acaso, mas a amostra não sustenta um ranking.</p>',
     "square"))
 
 slides.append(slide_figura(
     "O perfil social não explica as diferenças",
     "18_associacoes_padronizadas", "Correlação entre indicadores sociais e a frequência padronizada",
-    stat("ρ = 0,27", "IPS: bairros com IPS maior têm mais registros, ao contrário da hipótese inicial")
+    stat("ρ = 0,28", "IPS: bairros com IPS maior têm mais registros, ao contrário da hipótese inicial")
     + '<p class="muted">Ponto cheio: 2020–2021; marcadores vazios: cada ano. Densidade, favelas e domicílios inadequados ficam na faixa de relação fraca.</p>'
     + '<p class="muted">Registros dependem de alguém notificar: o resultado do IPS pode refletir mais monitoramento, não menos vulnerabilidade.</p>'))
 
 slides.append(slide_figura(
     "Um acúmulo de água dura cerca de duas horas, com qualquer chuva",
     "12_duracao_chegada", "Duração dos registros e primeira chegada dos órgãos por faixa de chuva",
-    stat("2,1–2,2 h", "duração mediana do acúmulo de água em todas as faixas de chuva")
-    + stat("0,8–2,8 h", "primeira chegada mediana entre áreas de planejamento, em dias acima de 30 mm")
+    stat("2,1–2,4 h", "duração mediana do acúmulo de água em todas as faixas de chuva")
+    + stat("0,8–2,2 h", "primeira chegada mediana entre áreas de planejamento, em dias acima de 30 mm")
     + '<p class="muted">A chegada é contada desde o início do registro, não do chamado: descreve os registros, não mede a eficiência dos órgãos.</p>'))
 
 slides.append("""
