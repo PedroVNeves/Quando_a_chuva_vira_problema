@@ -22,9 +22,10 @@ def recortar(imagem):
     cinza = np.asarray(imagem.convert("L")).astype(int)
     altura, largura = cinza.shape
     com_tinta = np.where((cinza < 235).sum(axis=1) > 0)[0]
-    # Cabeçalho: termina no primeiro espaço vazio com mais de 50 px depois do subtítulo.
+    # Cabeçalho: termina no maior espaço vazio do terço superior, logo depois do subtítulo.
     saltos = np.diff(com_tinta)
-    i = np.argmax(saltos > 50)
+    saltos[com_tinta[:-1] > altura // 3] = 0
+    i = np.argmax(saltos)
     topo = com_tinta[i + 1] - 12 if saltos[i] > 50 else 0
     # Rodapé: começa na régua cinza que atravessa a figura, a mais baixa delas.
     reguas = [r for r in range(altura // 2, altura)
@@ -184,8 +185,8 @@ slides.append(slide_figura(
     "Um acúmulo de água dura cerca de duas horas, com qualquer chuva",
     "12_duracao_chegada", "Duração dos registros e primeira chegada dos órgãos por faixa de chuva",
     stat("2,1–2,4 h", "duração mediana do acúmulo de água em todas as faixas de chuva")
-    + stat("0,8–2,2 h", "primeira chegada mediana entre áreas de planejamento, em dias acima de 30 mm")
-    + '<p class="muted">A chegada é contada desde o início do registro, não do chamado: descreve os registros, não mede a eficiência dos órgãos.</p>'))
+    + stat("1,5–4,0 h", "duração mediana entre áreas de planejamento, em dias acima de 30 mm: mais longa na Barra, em Jacarepaguá e na Zona Oeste")
+    + '<p class="muted">Cada ponto é um registro, em escala logarítmica. A chegada é contada desde o início do registro, não do chamado: descreve os registros, não mede a eficiência dos órgãos.</p>'))
 
 slides.append("""
 <section class="slide dark">
