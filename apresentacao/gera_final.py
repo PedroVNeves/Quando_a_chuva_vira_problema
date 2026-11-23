@@ -151,11 +151,12 @@ slides.append("""
 </section>""" % figura("20_unidade_prefeitura"))
 
 slides.append(slide_figura(
-    "Pancada ou acumulado: a chuva da última hora pesa mais",
-    "13_janelas_chuva", "Frequência de registros por classe de chuva anterior em quatro janelas",
-    '<p class="lead-s">Medimos a chuva das <b>1 h, 4 h, 24 h e 96 h anteriores</b> a blocos de seis horas, para que a chuva venha antes do registro.</p>'
-    + stat("7,0%", "dos blocos com chuva acima do P90 na última hora têm registro, contra 2,3% no acumulado de 24 h")
-    + '<p class="muted">Em todas as janelas, mais chuva anterior vem com mais registros. A classe de 1 h reúne casos mais extremos: é associação, não desempenho de um alerta.</p>'))
+    "Pancada ou acumulado: depende do que se compara",
+    "13_janelas_chuva", "Frequência de registros nos blocos com mais chuva e AUC de quatro janelas anteriores",
+    '<p class="lead-s">Chuva das <b>1 h, 4 h, 24 h e 96 h anteriores</b> a blocos de seis horas, com grupos do mesmo tamanho em cada janela.</p>'
+    + stat("7,0% × 3,3%", "dos blocos com mais chuva têm registro, com o critério de 1 h e o de 24 h: a pancada marca os extremos")
+    + stat("0,80 × 0,72", "AUC de 24 h e de 1 h: no conjunto, o acumulado separa melhor; metade dos registros vem sem chuva na hora anterior")
+    + '<p class="muted">Associação, não desempenho de um alerta. Nos deslizamentos (57 casos), as janelas longas separam melhor.</p>'))
 
 slides.append(slide_figura(
     "Poucos bairros concentram os registros",
@@ -166,11 +167,11 @@ slides.append(slide_figura(
     "wide"))
 
 slides.append(slide_figura(
-    "As diferenças entre bairros se repetem de um ano para o outro",
+    "A ordem dos bairros se repete em parte entre os anos",
     "17_coerencia_anual", "Frequência padronizada de cada bairro em 2020 contra 2021",
     stat("ρ = 0,68", "correlação de postos entre 2020 e 2021, nos mesmos 100 bairros")
-    + stat("66 de 100", "bairros mudam até 5 pontos percentuais")
-    + '<p class="muted">Um ponto por bairro; faixa cinza: diferença de até 5 pontos. A frequência é padronizada: cada bairro é comparado como se tivesse recebido a mesma mistura de chuva (10–50 mm). As diferenças não parecem acaso, mas a amostra não sustenta um ranking.</p>',
+    + stat("0,54", "sem os 35 bairros sem registro nos dois anos; por sorteio, ρ ficaria abaixo de 0,20")
+    + '<p class="muted">Um ponto por bairro. A frequência é padronizada: cada bairro é comparado como se tivesse recebido a mesma mistura de chuva (10–50 mm). A ordem se repete; os valores não (a maioria subiu em 2021). A amostra não sustenta um ranking.</p>',
     "square"))
 
 slides.append(slide_figura(
@@ -178,15 +179,15 @@ slides.append(slide_figura(
     "18_associacoes_padronizadas", "Correlação entre indicadores sociais e a frequência padronizada",
     stat("ρ = 0,28", "IPS: bairros com IPS maior têm mais registros, ao contrário da hipótese inicial")
     + '<p class="muted">Ponto cheio: 2020–2021; marcadores vazios: cada ano. Densidade, favelas e domicílios inadequados ficam na faixa de relação fraca.</p>'
-    + stat("2,1%", "dos registros de alagamento estão dentro de favelas, que ocupam 4,1% da cidade; nos deslizamentos, são 28%")
-    + '<p class="muted">A base registra melhor os alagamentos nas vias monitoradas: o IPS positivo reflete onde se registra, não menos vulnerabilidade.</p>'))
+    + stat("1,5%", "dos bolsões d'água em via (84% dos registros de alagamento) estão em favelas, que ocupam 4,1% da cidade; “alagamentos e enchentes” (9,7%) e deslizamentos (28%) ficam acima")
+    + '<p class="muted">A base é dominada por um tipo ligado às vias: o IPS positivo pode refletir onde se registra, e não menos vulnerabilidade.</p>'))
 
 slides.append(slide_figura(
-    "Um acúmulo de água dura cerca de duas horas, com qualquer chuva",
+    "O tempo do registro muda pouco com a chuva e mais com o lugar",
     "12_duracao_chegada", "Duração dos registros e primeira chegada dos órgãos por faixa de chuva",
-    stat("2,1–2,4 h", "duração mediana do acúmulo de água em todas as faixas de chuva")
+    stat("2,1–2,4 h", "tempo mediano em que o registro de acúmulo de água fica aberto, em todas as faixas de chuva")
     + stat("1,5–4,0 h", "duração mediana entre áreas de planejamento, em dias acima de 30 mm: mais longa na Barra, em Jacarepaguá e na Zona Oeste")
-    + '<p class="muted">Cada ponto é um registro, em escala logarítmica. A chegada é contada desde o início do registro, não do chamado: descreve os registros, não mede a eficiência dos órgãos.</p>'))
+    + '<p class="muted">“Alagamentos e enchentes” ficam abertos 7,9 h, contra 2,0 h dos bolsões. A duração mede o registro, não a água na rua; a chegada conta desde o início do registro e não mede eficiência.</p>'))
 
 slides.append("""
 <section class="slide dark">

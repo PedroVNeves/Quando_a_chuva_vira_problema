@@ -29,22 +29,27 @@ ficam no apêndice.
 - **A afirmação da prefeitura depende da unidade.** Acima de 30 mm, há registro em 16%
   dos bairro-dias, em 44% das estação-dias e em 93% das cidade-dias. O patamar de 50% é
   plausível para a área de uma estação, mas não para um bairro isolado.
-- **A chuva da última hora pesa mais.** Mais chuva nas horas e dias anteriores se
-  associa a mais registros, mas a chuva da última hora tem a associação mais forte:
-  7% dos blocos com chuva forte na última hora têm registro, contra 2% com o critério
-  de 24 horas.
+- **Pancada e acumulado contam partes diferentes.** Comparando a mesma quantidade de
+  blocos de seis horas com mais chuva em cada janela, 7,0% têm registro com o critério
+  da última hora, contra 3,3% com o de 24 horas. No conjunto, porém, o acumulado de 24
+  horas separa melhor os blocos com e sem registro (AUC 0,80 contra 0,72), e metade dos
+  registros ocorre sem chuva na hora anterior.
 - **Os registros se concentram em poucos bairros.** A Barra da Tijuca soma 197 dos
   1.719 registros, e dez bairros reúnem 41% do total. Sob a mesma chuva, os bairros
-  diferem, e essas diferenças se repetem em parte de 2020 para 2021 (ρ = 0,68 em 100
-  bairros).
+  diferem, e a ordem dos bairros se repete em parte de 2020 para 2021 (ρ = 0,68 em 100
+  bairros; 0,54 sem os 35 bairros sem registro nos dois anos).
 - **O perfil social não explica as diferenças de forma uniforme.** Bairros com IPS
   maior tendem a ter mais registros, ao contrário da hipótese inicial. Densidade e o
   indicador de favelas ficam perto de zero, e domicílios inadequados só mostram
   associação em 2020.
-- **Os registros de alagamento quase não chegam às favelas.** Só 2,1% dos registros de
-  acúmulo de água caem dentro de favelas, que ocupam 4,1% da área da cidade, enquanto
-  28% dos deslizamentos estão nelas. A base registra melhor os alagamentos nas vias
-  monitoradas, o que ajuda a explicar o IPS positivo.
+- **O tipo mais comum de registro quase não aparece nas favelas.** O bolsão d'água em
+  via, 84% dos registros de acúmulo de água, fica dentro de favelas em 1,5% dos casos,
+  para 4,1% da área da cidade. Já "alagamentos e enchentes" (9,7%) e deslizamentos (28%)
+  ficam acima dessa parte. A base mede melhor o problema nas vias, o que pode ajudar a
+  entender o IPS positivo.
+- **O tempo do registro muda pouco com a chuva.** O registro de acúmulo de água fica
+  aberto cerca de 2 horas em todas as faixas de chuva; muda mais com a região (1,5 h no
+  Centro, 4 h na Zona Oeste) e com o tipo. A medida descreve o registro, não a água na rua.
 - **A chuva se concentra no início da noite** nas três estações com série histórica
   comparável. A série não permite afirmar que os extremos aumentaram.
 

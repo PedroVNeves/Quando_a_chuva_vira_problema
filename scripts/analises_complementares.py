@@ -288,8 +288,8 @@ def chuva_antes_blocos(bq, ids, referencia):
     return pd.concat(tabelas, ignore_index=True), pd.DataFrame(auditoria)
 
 
-def comparar_janelas(leituras, mapa, foco, cor, n_boot=600):
-    """Frequência em blocos futuros fixos, com amostra comum às quatro janelas."""
+def montar_blocos(leituras, mapa, foco, cor):
+    """Bairro × bloco de seis horas, com a chuva anterior e os registros do bloco."""
     base = mapa[['id_bairro', 'id_estacao']].merge(leituras, on='id_estacao', validate='many_to_many')
     base = base.dropna(subset=JANELAS).copy()
     base['dia'] = base.bloco.dt.normalize()
@@ -302,9 +302,58 @@ def comparar_janelas(leituras, mapa, foco, cor, n_boot=600):
         base = base.join(cont, on=['id_bairro','bloco'], validate='one_to_one')
         base[col] = base[col].fillna(0).astype(int)
     base['semana'] = base.dia.dt.to_period('W-SUN').dt.start_time
+    return base.reset_index(drop=True)
+
+
+def pesos_semanas(base, n_boot, semente=2026):
+    """Pesos de reamostragem de semanas inteiras, aplicáveis a cada bairro-bloco."""
     semanas = pd.date_range(base.semana.min(), base.semana.max(), freq='7D')
-    rng = np.random.default_rng(2026)
+    rng = np.random.default_rng(semente)
     pesos = rng.multinomial(len(semanas), np.ones(len(semanas))/len(semanas), size=n_boot)
+    posicao = pd.Series(np.arange(len(semanas)), index=semanas)
+    return semanas, pesos, base.semana.map(posicao).to_numpy()
+
+
+def comparar_janelas_iguais(base, fracoes=(.0075, .01, .02, .05, .10), n_boot=400):
+    """Compara as janelas em grupos do mesmo tamanho e pela separação geral (AUC).
+
+    Grupos iguais: para cada janela, os bairro-blocos com mais chuva anterior, na
+    mesma quantidade em todas as janelas. AUC: chance de um bloco com registro ter
+    tido mais chuva na janela que um bloco sem registro (0,5 = sorteio).
+    """
+    _, pesos, semana_bloco = pesos_semanas(base, n_boot)
+    topo, separacao = [], []
+    for janela in JANELAS:
+        ordem = np.argsort(-base[janela].to_numpy(), kind='stable')
+        valores, inverso = np.unique(base[janela].to_numpy(), return_inverse=True)
+        for grupo, col in [('Acúmulo de água', 'n_agua'), ('Deslizamentos', 'n_deslizamento')]:
+            evento = base[col].gt(0).to_numpy()
+            for fracao in fracoes:
+                sel = ordem[:int(round(fracao*len(base)))]
+                peso_sel = pesos[:, semana_bloco[sel]]
+                boot = 100*(peso_sel*evento[sel]).sum(axis=1)/peso_sel.sum(axis=1)
+                topo.append({'janela': janela, 'grupo': grupo, 'fracao_pct': 100*fracao, 'blocos': len(sel),
+                             'com_registro': int(evento[sel].sum()), 'frequencia_pct': 100*evento[sel].mean(),
+                             'ic_inferior_pct': np.percentile(boot, 2.5), 'ic_superior_pct': np.percentile(boot, 97.5)})
+
+            def auc(peso):
+                # Empates de chuva contam meio ponto; os valores repetidos são agrupados.
+                pos = np.bincount(inverso, weights=peso*evento, minlength=len(valores))
+                neg = np.bincount(inverso, weights=peso*~evento, minlength=len(valores))
+                abaixo = np.cumsum(neg) - neg
+                return (pos*(abaixo + neg/2)).sum()/(pos.sum()*neg.sum())
+            boot = np.array([auc(p[semana_bloco]) for p in pesos])
+            separacao.append({'janela': janela, 'grupo': grupo, 'eventos': int(evento.sum()),
+                              'auc': auc(np.ones(len(base))), 'ic_inferior': np.percentile(boot, 2.5),
+                              'ic_superior': np.percentile(boot, 97.5),
+                              'registros_sem_chuva_pct': 100*base.loc[evento, janela].eq(0).mean()})
+    return pd.DataFrame(topo), pd.DataFrame(separacao)
+
+
+def comparar_janelas(leituras, mapa, foco, cor, n_boot=600):
+    """Frequência em blocos futuros fixos, com amostra comum às quatro janelas."""
+    base = montar_blocos(leituras, mapa, foco, cor)
+    semanas, pesos, _ = pesos_semanas(base, n_boot)
     saidas, cortes = [], []
     categorias = ['Sem chuva', 'Positiva até P50', 'P50–P90', 'Acima de P90']
     for janela in JANELAS:
