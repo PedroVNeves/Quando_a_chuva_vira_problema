@@ -69,7 +69,7 @@ slides.append("""
   <div class="hero-stats">
     <div><span class="num">32</span><span class="lbl">pluviômetros do Alerta Rio ligados a 167 bairros</span></div>
     <div><span class="num">121.423</span><span class="lbl">bairro-dias comparados em 2020–2021, com e sem registros</span></div>
-    <div><span class="num">5</span><span class="lbl">bases públicas cruzadas por espaço e tempo</span></div>
+    <div><span class="num">6</span><span class="lbl">bases públicas cruzadas por espaço e tempo</span></div>
   </div>
   <div class="hero-foot">
     Pedro Henrique Vasconcelos Neves e Gabriel Andrade Souza · FGV EMAp 2026.2<br>
@@ -101,7 +101,7 @@ slides.append(slide_figura(
     "01_rede_estacoes", "Mapa dos bairros ligados à estação mais próxima, coloridos pela distância",
     stat("4 bairros", "por estação, em mediana; no máximo 15")
     + stat("2,0 km", "distância mediana entre o bairro e a sua estação")
-    + '<p class="muted">Bases: chuva a cada 15 min (Alerta Rio), ocorrências (COR), limites de bairros (IPP), Censo e IPS 2022 (Data.Rio).</p>'
+    + '<p class="muted">Bases: chuva a cada 15 min (Alerta Rio), ocorrências (COR), limites de bairros e de favelas (IPP), Censo e IPS 2022 (Data.Rio).</p>'
     + '<p class="muted">A estação é escolhida sem olhar ocorrências. Na Zona Oeste ela fica mais longe: a chuva medida é uma aproximação.</p>'))
 
 slides.append("""
@@ -122,10 +122,10 @@ slides.append("""
 slides.append(slide_figura(
     "A chuva se concentra no início da noite",
     "15_ciclo_horario", "Chuva média por hora nas estações Vidigal, Tijuca e Campo Grande",
-    stat("19h–20h", "pico médio de chuva nas três estações com série histórica comparável")
-    + stat("10 anos", "atendem aos critérios de cobertura, entre 1997 e 2024")
-    + '<p class="muted">Com dez anos e lacunas, não dá para afirmar que os dias de chuva extrema ficaram mais frequentes.</p>',
-    "wide"))
+    stat("20h–21h", "pico médio de chuva nas três estações com série histórica")
+    + stat("Sem aumento", "nos dias com 50 mm ou mais, de 1997–2010 para 2011–2024: Vidigal 1,27% → 1,19%; Tijuca 1,75% → 1,22%; Campo Grande 0,56% → 0,58%")
+    + '<p class="muted">De 17 a 23 anos completos por estação, depois de realinhar os horários de 1997–2010. Pouco para falar em tendência climática.</p>',
+    "full"))
 
 slides.append(slide_figura(
     "Mais chuva, mais registros, mas longe de 50% por bairro",
@@ -133,7 +133,8 @@ slides.append(slide_figura(
     stat("0,04%", "dos bairro-dias sem chuva têm registro de acúmulo de água")
     + stat("13,2%", "entre 30 e 50 mm")
     + stat("32,0%", "acima de 100 mm, com só 9 datas")
-    + '<p class="muted">Ponto: frequência; traço: intervalo de 95%. Mudar as escolhas de método altera as frequências em no máximo 3,4 pontos percentuais.</p>'))
+    + '<p class="muted">Ponto: frequência; traço: intervalo de 95%. Mudar as escolhas de método altera as frequências em no máximo 3,4 pontos percentuais.</p>',
+    "full"))
 
 slides.append("""
 <section class="slide">
@@ -153,33 +154,25 @@ slides.append("""
 slides.append(slide_figura(
     "Pancada ou acumulado: depende do que se compara",
     "13_janelas_chuva", "Frequência de registros nos blocos com mais chuva e AUC de quatro janelas anteriores",
-    '<p class="lead-s">Chuva das <b>1 h, 4 h, 24 h e 96 h anteriores</b> a blocos de seis horas, com grupos do mesmo tamanho em cada janela.</p>'
-    + stat("7,0% × 3,3%", "dos blocos com mais chuva têm registro, com o critério de 1 h e o de 24 h: a pancada marca os extremos")
+    stat("7,0% × 3,3%", "dos blocos com mais chuva têm registro, com o critério de 1 h e o de 24 h: a pancada marca os extremos")
     + stat("0,80 × 0,72", "AUC de 24 h e de 1 h: no conjunto, o acumulado separa melhor; metade dos registros vem sem chuva na hora anterior")
-    + '<p class="muted">Associação, não desempenho de um alerta. Nos deslizamentos (57 casos), as janelas longas separam melhor.</p>'))
+    + '<p class="muted">Chuva das 1 h, 4 h, 24 h e 96 h anteriores a blocos de seis horas, com grupos do mesmo tamanho em cada janela. Associação, não desempenho de um alerta.</p>',
+    "full"))
 
 slides.append(slide_figura(
     "Poucos bairros concentram os registros",
     "19_mapa_registros", "Mapas por bairro: total de registros e frequência sob chuva forte",
     stat("41%", "dos 1.719 registros estão em dez bairros; a Barra da Tijuca sozinha tem 197")
-    + '<p class="muted">Sob chuva forte (direita), as frequências mais altas ficam na Zona Sul e no entorno do Centro: Lagoa, Catete, Manguinhos.</p>'
-    + '<p class="muted">Muitos registros não é o mesmo que muitos registros por chuva: a Barra teve só 16 dias acima de 30 mm.</p>',
-    "wide"))
+    + stat("ρ = 0,68", "a ordem dos bairros se repete de 2020 para 2021 (0,54 sem os 35 bairros sem registro nos dois anos)")
+    + '<p class="muted">Sob chuva forte (direita), as frequências mais altas ficam na Zona Sul e no entorno do Centro. A Barra lidera no total, mas teve só 16 dias acima de 30 mm.</p>',
+    "full"))
 
 slides.append(slide_figura(
-    "A ordem dos bairros se repete em parte entre os anos",
-    "17_coerencia_anual", "Frequência padronizada de cada bairro em 2020 contra 2021",
-    stat("ρ = 0,68", "correlação de postos entre 2020 e 2021, nos mesmos 100 bairros")
-    + stat("0,54", "sem os 35 bairros sem registro nos dois anos; por sorteio, ρ ficaria abaixo de 0,20")
-    + '<p class="muted">Um ponto por bairro. A frequência é padronizada: cada bairro é comparado como se tivesse recebido a mesma mistura de chuva (10–50 mm). A ordem se repete; os valores não (a maioria subiu em 2021). A amostra não sustenta um ranking.</p>',
-    "square"))
-
-slides.append(slide_figura(
-    "O perfil social não explica as diferenças",
-    "18_associacoes_padronizadas", "Correlação entre indicadores sociais e a frequência padronizada",
-    stat("ρ = 0,28", "IPS: bairros com IPS maior têm mais registros, ao contrário da hipótese inicial")
-    + '<p class="muted">Ponto cheio: 2020–2021; marcadores vazios: cada ano. Densidade, favelas e domicílios inadequados ficam na faixa de relação fraca.</p>'
-    + stat("1,5%", "dos bolsões d'água em via (84% dos registros de alagamento) estão em favelas, que ocupam 4,1% da cidade; “alagamentos e enchentes” (9,7%) e deslizamentos (28%) ficam acima")
+    "Bairros maiores registram mais; o perfil social pesa pouco",
+    "18_associacoes_padronizadas", "Correlação entre indicadores sociais, tamanho do bairro e a frequência padronizada",
+    stat("ρ = 0,44", "população do bairro: o que mais se associa aos registros, seguida da área (0,33)")
+    + stat("ρ = 0,24", "IPS, no sentido contrário ao esperado; 0,25 descontando população e área")
+    + stat("1,5%", "dos bolsões d'água em via, 84% dos registros, estão em favelas (4,1% da cidade)")
     + '<p class="muted">A base é dominada por um tipo ligado às vias: o IPS positivo pode refletir onde se registra, e não menos vulnerabilidade.</p>'))
 
 slides.append(slide_figura(
@@ -187,16 +180,17 @@ slides.append(slide_figura(
     "12_duracao_chegada", "Duração dos registros e primeira chegada dos órgãos por faixa de chuva",
     stat("2,1–2,4 h", "tempo mediano em que o registro de acúmulo de água fica aberto, em todas as faixas de chuva")
     + stat("1,5–4,0 h", "duração mediana entre áreas de planejamento, em dias acima de 30 mm: mais longa na Barra, em Jacarepaguá e na Zona Oeste")
-    + '<p class="muted">“Alagamentos e enchentes” ficam abertos 7,9 h, contra 2,0 h dos bolsões. A duração mede o registro, não a água na rua; a chegada conta desde o início do registro e não mede eficiência.</p>'))
+    + '<p class="muted">“Alagamentos e enchentes” ficam abertos 7,9 h, contra 2,0 h dos bolsões. A duração mede o registro, não a água na rua.</p>',
+    "tall"))
 
 slides.append("""
 <section class="slide dark">
   <h2>O que aprendemos</h2>
   <div class="steps">
     <div class="step"><span class="n">1</span><div><b>O limiar depende da escala</b><p>30 mm leva a 44% de registro na área de uma estação, mas a 16% em um bairro.</p></div></div>
-    <div class="step"><span class="n">2</span><div><b>O lugar importa</b><p>Sob a mesma chuva, os bairros diferem, e as diferenças se repetem entre anos.</p></div></div>
-    <div class="step"><span class="n">3</span><div><b>O perfil social não explica</b><p>IPS, densidade e habitação não têm relação uniforme com mais registros.</p></div></div>
-    <div class="step"><span class="n">4</span><div><b>Recomendação</b><p>Acompanhar registros com seus denominadores e dias sem ocorrência; separar início, chamado, chegada e fim do atendimento.</p></div></div>
+    <div class="step"><span class="n">2</span><div><b>O lugar pesa mais que o perfil social</b><p>Sob a mesma chuva, os bairros diferem e a ordem se repete entre anos; bairros maiores registram mais.</p></div></div>
+    <div class="step"><span class="n">3</span><div><b>A base vê as vias, não as casas</b><p>O bolsão d'água em via domina os registros e quase não aparece nas favelas.</p></div></div>
+    <div class="step"><span class="n">4</span><div><b>Recomendação</b><p>Calibrar o alerta de 30 mm pela área de cada estação, não por bairro; registrar no COR o horário do chamado e do fim do alagamento.</p></div></div>
   </div>
   <p class="closing">Limites: registros não são todos os alagamentos; uma estação representa vários bairros; 2020–2021 inclui a pandemia.</p>
 </section>""")
@@ -240,6 +234,13 @@ blockquote { margin: 0 0 24px; padding: 18px 22px; border-left: 6px solid #B8663
 .fig-side .fig { flex: 0 0 auto; max-width: 860px; max-height: 560px; }
 .fig-side.wide .fig { max-width: 900px; }
 .fig-side.square .fig { max-width: 600px; }
+.fig-side.full { flex-direction: column; align-items: stretch; gap: 12px; height: 580px; }
+.fig-side.full .fig { max-width: 1168px; max-height: 450px; margin: 0 auto; }
+.fig-side.full .side { display: flex; gap: 28px; align-items: flex-start; }
+.fig-side.full .side > * { flex: 1; margin-bottom: 0; }
+.fig-side.full .stat .num { font-size: 30px; }
+.fig-side.tall { height: 600px; margin-top: -8px; }
+.fig-side.tall .fig { max-width: 900px; max-height: 600px; }
 .fig-side .side { flex: 1; min-width: 0; }
 .fig { display: block; }
 .stat { margin-bottom: 18px; }

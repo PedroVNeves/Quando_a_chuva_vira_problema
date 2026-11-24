@@ -202,7 +202,8 @@ def interativo_caso(pontos, faixa_rede):
 def mostrar_interativo(fig, nome, descricao, pasta=Path("resultados")):
     """Salva o HTML do gráfico e devolve um iframe isolado para exibir no notebook.
 
-    O Plotly é carregado pela CDN, o que mantém o notebook leve, mas exige internet.
+    O Plotly é carregado pela CDN, o que mantém o notebook leve, mas exige internet;
+    a cópia _offline.html em resultados/ funciona sem conexão.
     """
     altura = int(fig.layout.height or 500)
     pagina = fig.to_html(include_plotlyjs="cdn", full_html=True, default_height=f"{altura}px",
@@ -210,6 +211,9 @@ def mostrar_interativo(fig, nome, descricao, pasta=Path("resultados")):
                                  "toImageButtonOptions": {"filename": nome, "scale": 2}})
     pasta.mkdir(parents=True, exist_ok=True)
     (pasta / f"{nome}.html").write_text(pagina, encoding="utf-8")
+    # Cópia com o Plotly embutido: abre sem internet, como plano B na apresentação.
+    fig.write_html(pasta / f"{nome}_offline.html", include_plotlyjs=True, full_html=True,
+                   default_height=f"{altura}px", config={"displaylogo": False, "responsive": True})
     # O <div> externo evita o aviso do IPython para HTML que começa com <iframe>.
     return (f'<div><iframe title="{html.escape(descricao, quote=True)}" sandbox="allow-scripts allow-downloads" '
             f'style="width:100%;height:{altura + 24}px;border:1px solid {GRID};border-radius:8px" '

@@ -17,11 +17,19 @@ INDICADORES_SOCIAIS = {
     'favelas_pct': 'Indicador de favelas (IPS)',
     'inadequacao_cadunico_pct': 'Domicílios inadequados (CadÚnico)',
 }
+# Tamanho do bairro: não é indicador social, mas mede exposição e entra como referência.
+INDICADORES_TAMANHO = {
+    'populacao_2022': 'População (Censo 2022)',
+    'area_km2': 'Área do bairro',
+}
+# O IPP renomeou São Cristóvão; IPS e Censo 2022 ainda usam o nome antigo.
+NOMES_EQUIVALENTES = {'imperial de sao cristovao': 'sao cristovao'}
 
 
 def chave_nome(s):
-    return s.astype('string').map(lambda v: ''.join(c for c in unicodedata.normalize('NFKD', v.casefold())
+    chave = s.astype('string').map(lambda v: ''.join(c for c in unicodedata.normalize('NFKD', v.casefold())
         if not unicodedata.combining(c)).strip() if pd.notna(v) else pd.NA)
+    return chave.replace(NOMES_EQUIVALENTES)
 
 
 def ler_indicadores_habitacao(arquivo):
@@ -175,11 +183,12 @@ def padronizar_territorio(painel, n_boot=400):
 
 def correlacionar_social(taxas, social):
     """Correlação de postos entre a frequência padronizada e cada indicador social."""
-    colunas = ['id_bairro',*INDICADORES_SOCIAIS] + (['nome'] if 'nome' not in taxas else [])
+    indicadores = {**INDICADORES_SOCIAIS, **INDICADORES_TAMANHO}
+    colunas = ['id_bairro',*indicadores] + (['nome'] if 'nome' not in taxas else [])
     taxas = taxas.merge(social[colunas],on='id_bairro',how='left',validate='many_to_one')
     correlacoes = []
     for (cenario,periodo),t in taxas.groupby(['cenario','periodo']):
-        for indicador,rotulo in INDICADORES_SOCIAIS.items():
+        for indicador,rotulo in indicadores.items():
             v = t[[indicador,'frequencia_padronizada_pct']].dropna()
             rho = v.rank().corr().iloc[0,1] if len(v)>=10 else np.nan
             correlacoes.append({'cenario':cenario,'periodo':periodo,'indicador':indicador,
@@ -233,9 +242,7 @@ def analisar_duracoes(foco, painel, cor, orgaos):
 
 def perfil_social(bairros, mapa, painel, data_rio):
     """Associação por nomes normalizados únicos; sem aproximação textual."""
-    def chave(s):
-        return s.astype('string').map(lambda v: ''.join(c for c in unicodedata.normalize('NFKD', v.casefold())
-            if not unicodedata.combining(c)).strip() if pd.notna(v) else pd.NA)
+    chave = chave_nome
     b = bairros[['id_bairro', 'nome', 'geometry']].copy()
     b['chave'] = chave(b.nome)
     b['area_km2'] = b.to_crs('EPSG:31983').geometry.area/1e6
@@ -248,6 +255,7 @@ def perfil_social(bairros, mapa, painel, data_rio):
     b = b.drop(columns='geometry').merge(ips[['chave', 'ips_2022']], on='chave', how='left', validate='one_to_one')
     b = b.merge(censo[['chave', 'Total_de_pessoas_2022']], on='chave', how='left', validate='one_to_one')
     b['densidade_2022'] = b.Total_de_pessoas_2022/b.area_km2
+    b['populacao_2022'] = b.Total_de_pessoas_2022
     cobertura = painel.groupby('id_bairro').elegivel.mean()
     base = painel.loc[painel.elegivel & painel.total_mm.gt(30)].copy()
     base['evento'] = base.n_agua.gt(0)
@@ -383,3 +391,11 @@ def comparar_janelas(leituras, mapa, foco, cor, n_boot=600):
             resumo['janela'], resumo['grupo'] = janela, grupo
             saidas.append(resumo.reset_index())
     return pd.concat(saidas, ignore_index=True), pd.DataFrame(cortes)
+
+
+def correlacao_parcial(t, x, y, controles):
+    """Correlação de postos entre x e y, retirando dos postos o efeito linear dos controles."""
+    v = t[[x, y, *controles]].dropna().rank()
+    z = np.column_stack([np.ones(len(v)), v[controles].to_numpy()])
+    residuo = lambda c: v[c].to_numpy() - z @ np.linalg.lstsq(z, v[c].to_numpy(), rcond=None)[0]
+    return float(np.corrcoef(residuo(x), residuo(y))[0, 1]), len(v)

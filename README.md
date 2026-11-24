@@ -38,10 +38,11 @@ ficam no apêndice.
   1.719 registros, e dez bairros reúnem 41% do total. Sob a mesma chuva, os bairros
   diferem, e a ordem dos bairros se repete em parte de 2020 para 2021 (ρ = 0,68 em 100
   bairros; 0,54 sem os 35 bairros sem registro nos dois anos).
-- **O perfil social não explica as diferenças de forma uniforme.** Bairros com IPS
-  maior tendem a ter mais registros, ao contrário da hipótese inicial. Densidade e o
-  indicador de favelas ficam perto de zero, e domicílios inadequados só mostram
-  associação em 2020.
+- **O tamanho do bairro pesa mais que o perfil social.** Sob a mesma mistura de chuva,
+  a população (ρ = 0,44) e a área (ρ = 0,33) se associam mais aos registros que
+  qualquer indicador social. Bairros com IPS maior tendem a ter mais registros
+  (ρ = 0,24, ou 0,25 descontando o tamanho), ao contrário da hipótese inicial.
+  Densidade e o indicador de favelas ficam perto de zero.
 - **O tipo mais comum de registro quase não aparece nas favelas.** O bolsão d'água em
   via, 84% dos registros de acúmulo de água, fica dentro de favelas em 1,5% dos casos,
   para 4,1% da área da cidade. Já "alagamentos e enchentes" (9,7%) e deslizamentos (28%)
@@ -50,8 +51,10 @@ ficam no apêndice.
 - **O tempo do registro muda pouco com a chuva.** O registro de acúmulo de água fica
   aberto cerca de 2 horas em todas as faixas de chuva; muda mais com a região (1,5 h no
   Centro, 4 h na Zona Oeste) e com o tipo. A medida descreve o registro, não a água na rua.
-- **A chuva se concentra no início da noite** nas três estações com série histórica
-  comparável. A série não permite afirmar que os extremos aumentaram.
+- **A chuva se concentra no início da noite, e os dias fortes não aumentaram.** Nas três
+  estações com série histórica, de 1997–2010 para 2011–2024, a frequência de dias com
+  50 mm ou mais ficou parecida no Vidigal e em Campo Grande e caiu na Tijuca. Os
+  horários de 1997–2010 foram realinhados à grade de 15 minutos.
 
 Os resultados descrevem **registros** do COR, não todos os problemas da cidade, e
 mostram associações, não causas.
@@ -80,7 +83,7 @@ A proposta previa 2015–2025. A seção 1 explica por que a análise diária fi
 | Leituras de chuva a cada 15 min | Sistema Alerta Rio, via datalake municipal (BigQuery `datario`) | Totais diários e mensais, acumulados anteriores, extremos |
 | Ocorrências urbanas | COR, via datalake municipal | Tipo, horário, local, duração e chegada dos órgãos |
 | Limites de bairros | IPP, via datalake municipal | Associação espacial |
-| Censo 2022 e IPS Bairros 2022 | Data.Rio | Densidade, IPS e indicadores de habitação |
+| Censo 2022 e IPS Bairros 2022 | Data.Rio | População, densidade, IPS e indicadores de habitação |
 | Limites de favelas 2019 | IPP (SABREN), servidor de mapas da prefeitura | Registros dentro e fora das favelas |
 
 Os arquivos brutos ficam em `dados/brutos/` e foram coletados com

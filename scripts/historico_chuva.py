@@ -32,6 +32,30 @@ def agregar_horas(leituras):
     return g[['chuva_mm']], auditoria
 
 
+def alinhar_grade(leituras):
+    """Realinha à grade de 15 min as leituras com o desvio fixo da estação.
+
+    Até 2010, cada estação histórica registra todas as leituras com o mesmo desvio
+    em relação à grade (3 min 20 s no Vidigal, 20 s na Tijuca, 8 min em Campo
+    Grande). Só esse desvio dominante é corrigido, sempre para o instante anterior
+    da grade; outros desvios continuam fora da grade e não certificam horas.
+    """
+    idx = leituras.index
+    desvio = idx - idx.floor('15min')
+    fora = desvio != pd.Timedelta(0)
+    if not fora.any():
+        return leituras, 0
+    dominante = pd.Series(desvio[fora]).mode().iloc[0]
+    candidato = idx - dominante
+    # Se o instante realinhado já existe na grade, a leitura fica onde estava.
+    realinhar = (desvio == dominante) & ~candidato.isin(idx[~fora])
+    saida = leituras.copy()
+    saida.index = idx.where(~realinhar, candidato)
+    if not saida.index.is_unique:
+        raise ValueError('Realinhamento gerou instantes duplicados.')
+    return saida, int(realinhar.sum())
+
+
 def historico_rede(bq, referencia):
     """1997–2024 é o domínio auditado; cobertura determina os anos exibidos."""
     base = ds.dataset(Path(bq)/'clima_pluviometro/taxa_precipitacao_alertario.parquet')
@@ -44,9 +68,10 @@ def historico_rede(bq, referencia):
                 leituras=('fora_grade','size'), fora_grade=('fora_grade','sum')).reset_index()
         por_ano['fora_grade_pct'] = 100*por_ano.fora_grade/por_ano.leituras
         auditorias_anuais.append(por_ano.assign(estacao=nome))
+        l, realinhadas = alinhar_grade(l)
         h, a = agregar_horas(l)
         horas.append(h.reset_index().assign(id_estacao=id_, estacao=nome))
-        auditorias.append(dict(id_estacao=id_, estacao=nome, **a))
+        auditorias.append(dict(id_estacao=id_, estacao=nome, realinhadas=realinhadas, **a))
     h = pd.concat(horas, ignore_index=True)
     h['dia'] = h.hora.dt.normalize()
     dias = h.groupby(['id_estacao','dia']).chuva_mm.agg(horas_validas='count', total_mm='sum').reset_index()
@@ -79,7 +104,7 @@ def historico_rede(bq, referencia):
         p75_mm=('media_mm', lambda x:x.quantile(.75)), anos=('ano','size'),
         horas_com_chuva_pct=('horas_com_chuva_pct','mean')).reset_index()
     extremos = frequencias_extremos(tabela, comum, anual, mensal)
-    return dict(cobertura=anual.reset_index(), cobertura_mensal=mensal,
+    return dict(cobertura=anual.reset_index(), cobertura_mensal=mensal, dias=tabela.reset_index(),
                 auditoria=pd.DataFrame(auditorias), auditoria_anual=pd.concat(auditorias_anuais,ignore_index=True), ciclo=ciclo,
                 ciclo_por_ano=por_ano_hora, extremos=extremos)
 
@@ -99,3 +124,28 @@ def frequencias_extremos(tabela, comum, anual, mensal):
                 g['estacao'],g['limite_mm'],g['cobertura_min_pct'] = nome,limite,cobertura
                 saida.append(g)
     return pd.concat(saida,ignore_index=True)
+
+
+def comparar_periodos(dias, periodos=((1997, 2010), (2011, 2024)), limite=50.):
+    """Cada estação sozinha: anos com cobertura própria e frequência de dias fortes por período.
+
+    Sem exigir as três estações no mesmo dia, cada estação aproveita mais anos. Um
+    ano entra com pelo menos 90% dos dias completos e 80% em cada mês, na estação.
+    """
+    linhas, anos_estacao = [], []
+    t = dias.set_index('dia')
+    for id_, nome in REDE_HISTORICA.items():
+        v = t[id_]
+        cob = pd.DataFrame({'valido': v.notna(), 'ano': v.index.year, 'mes': v.index.month})
+        anual = cob.groupby('ano').valido.mean()
+        mensal = cob.groupby(['ano', 'mes']).valido.mean().groupby('ano').min()
+        anos = anual.index[anual.ge(.9) & mensal.ge(.8)]
+        anos_estacao.append({'estacao': nome, 'anos': len(anos), 'lista': ', '.join(map(str, anos))})
+        for inicio, fim in periodos:
+            sel = v.loc[v.index.year.isin([a for a in anos if inicio <= a <= fim])].dropna()
+            por_ano = sel.ge(limite).groupby(sel.index.year).mean()*100
+            linhas.append({'estacao': nome, 'periodo': f'{inicio}–{fim}', 'anos': len(por_ano),
+                           'dias_validos': len(sel), 'dias_fortes': int(sel.ge(limite).sum()),
+                           'frequencia_pct': 100*sel.ge(limite).mean(),
+                           'menor_ano_pct': por_ano.min(), 'maior_ano_pct': por_ano.max()})
+    return pd.DataFrame(linhas), pd.DataFrame(anos_estacao)
