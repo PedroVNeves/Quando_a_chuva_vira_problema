@@ -159,3 +159,4 @@ GitHub não os exibe; nela valem os gráficos estáticos.
 
 - [Enunciado do projeto](docs/AED20262_projeto.pdf)
 - [Proposta original](docs/Proposta%20Quando%20a%20chuva%20vira%20problema.pdf)
+- [Declaração de contribuições](CONTRIBUICOES.md)
